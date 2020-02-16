@@ -10,6 +10,13 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import LoadablePlugin from '@loadable/webpack-plugin';
 import PnpWebpackPlugin from 'pnp-webpack-plugin';
 
+const env = require('dotenv').config();
+
+const appConfig = {
+  projectName: env.parsed.PROJECT_NAME || 'first_project',
+  apiUrl: env.parsed.API_URL || 'https://surveyor-api.clappingape.com/'
+};
+
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isDev = nodeEnv === 'development';
 
@@ -39,7 +46,10 @@ const getPlugins = () => {
     new webpack.DefinePlugin({
       __CLIENT__: true,
       __SERVER__: false,
-      __DEV__: isDev
+      __DEV__: isDev,
+      'process.env': {
+        APP_CONFIG: JSON.stringify(appConfig)
+      }
     }),
     new webpack.ProgressPlugin(),
     PnpWebpackPlugin
